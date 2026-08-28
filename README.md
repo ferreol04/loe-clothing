@@ -1,16 +1,30 @@
-# React + Vite
+# LØÉ — Clothing & Lifestyle
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Boutique de mode en ligne avec tunnel de commande via WhatsApp (pas de paiement en ligne intégré).
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend** : React + Vite, Tailwind CSS
+- **État panier** : Zustand (`persist` → localStorage)
+- **Backend** : Supabase (Postgres, Auth, Storage, Realtime)
+- **Hébergement** : Vercel
 
-## React Compiler
+## Démarrage local
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+cp .env.example .env   # renseigner VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY
+npm run dev
+```
 
-## Expanding the Oxlint configuration
+## Base de données
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Le schéma complet (tables, RLS, storage) est dans [`supabase/schema.sql`](supabase/schema.sql) — à exécuter dans l'éditeur SQL du projet Supabase. Le dossier [`supabase/migrations`](supabase/migrations) garde l'historique des évolutions déjà intégrées au schéma principal.
+
+## Build & déploiement
+
+```bash
+npm run build
+```
+
+Déployé sur Vercel (voir [`vercel.json`](vercel.json) pour le fallback SPA de React Router). Voir [`ROADMAP.md`](ROADMAP.md) pour le détail des phases du projet.
