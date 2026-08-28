@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Check, ChevronLeft, ShoppingBag } from 'lucide-react'
 import { useProduct } from '../hooks/useProduct'
@@ -11,7 +11,26 @@ import { cn } from '../lib/cn'
 
 export function ProductDetail() {
   const { slug } = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
   const { product, loading, notFound } = useProduct(slug)
+
+  // Retour contextuel : accueil si le produit a été ouvert depuis les
+  // collections en vedette, collections sinon (comportement par défaut,
+  // y compris en cas d'accès direct via lien partagé).
+  const cameFromApp = Boolean(location.state?.from)
+  const backTo = location.state?.from === 'home' ? '/' : '/collections'
+  const backLabel = location.state?.from === 'home' ? "Retour à l'accueil" : 'Retour aux collections'
+
+  // Navigation arrière réelle (history back) quand on sait d'où vient le
+  // visiteur : la position de scroll exacte est alors restaurée sur la
+  // page précédente. Sinon (accès direct/lien partagé), on pousse vers la
+  // destination par défaut, sans position à restaurer.
+  function handleBack(event) {
+    if (!cameFromApp) return
+    event.preventDefault()
+    navigate(-1)
+  }
   const addItem = useCartStore((state) => state.addItem)
   const openCart = useCartStore((state) => state.openCart)
 
@@ -87,11 +106,12 @@ export function ProductDetail() {
         }
       />
       <Link
-        to="/collections"
+        to={backTo}
+        onClick={handleBack}
         className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-text-muted transition-colors hover:text-text"
       >
         <ChevronLeft size={16} />
-        Retour aux collections
+        {backLabel}
       </Link>
 
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">

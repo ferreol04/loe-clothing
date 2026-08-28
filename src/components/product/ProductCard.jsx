@@ -13,7 +13,7 @@ function pickQuickAddVariant(variants = []) {
   return variants.find((v) => v.stock == null || v.stock > 0) ?? null
 }
 
-export function ProductCard({ product }) {
+export function ProductCard({ product, from = 'collections' }) {
   const addItem = useCartStore((state) => state.addItem)
   const openCart = useCartStore((state) => state.openCart)
   const [justAdded, setJustAdded] = useState(false)
@@ -47,6 +47,7 @@ export function ProductCard({ product }) {
   return (
     <Link
       to={`/produits/${product.slug}`}
+      state={{ from }}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-[0_16px_40px_rgba(0,0,0,0.35)]"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-surface-hover">

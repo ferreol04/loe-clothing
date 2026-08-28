@@ -49,7 +49,7 @@ export function FeaturedCollections() {
             ))
           : products.map((product, i) => (
               <Reveal key={product.id} delay={i * 0.08}>
-                <ProductCard product={product} />
+                <ProductCard product={product} from="home" />
               </Reveal>
             ))}
       </div>

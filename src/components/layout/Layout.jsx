@@ -1,6 +1,6 @@
-import { useLayoutEffect, useState } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom'
 import { Navbar } from './Navbar'
 import { Footer } from './Footer'
 import { CartDrawer } from '../cart/CartDrawer'
@@ -24,14 +24,6 @@ export function Layout() {
     setCheckoutOpen(true)
   }
 
-  // Remonte en haut de page à chaque changement de route (React Router ne
-  // le fait pas automatiquement, contrairement à une navigation classique).
-  // useLayoutEffect : appliqué avant peinture, pour éviter tout flash de
-  // l'ancienne position de scroll sur le nouveau contenu.
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
-
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -51,6 +43,13 @@ export function Layout() {
       </AnimatePresence>
 
       <Footer />
+      {/* Remonte en haut sur une nouvelle navigation, restaure la position
+          de scroll exacte sur un retour arrière (bouton "Retour", navigateur).
+          Clé par pathname seul (sans les paramètres ?page=/?categorie=/?q=) :
+          sinon chaque changement de pagination sur Collections serait traité
+          comme une page jamais vue et remonterait instantanément en haut,
+          juste avant que son propre scroll fluide ne s'exécute — l'annulant. */}
+      <ScrollRestoration getKey={(loc) => loc.pathname} />
       <BackToTopButton />
       <CartDrawer onCheckout={handleCheckout} />
       <CheckoutModal open={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
